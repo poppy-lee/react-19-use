@@ -1,10 +1,12 @@
-import { Suspense, use, useRef, useState } from "react";
+import { Suspense, use, useState } from "react";
+import { useCachedPromise } from "./hooks/useCachedPromise";
 
 export const App = () => {
   const [counter, setCounter] = useState(0);
+
   const cachedTitlePromise = useCachedPromise(
     () => fetchTitle(counter),
-    counter
+    [counter]
   );
 
   return (
@@ -27,21 +29,6 @@ export const App = () => {
 const Title = ({ titlePromise }: { titlePromise: Promise<string> }) => {
   const title = use(titlePromise);
   return <h1>{title}</h1>;
-};
-
-const useCachedPromise = <T extends any>(
-  createPromise: () => Promise<T>,
-  key?: any
-): Promise<T> => {
-  const sid = JSON.stringify(key);
-  const cachedPromisesRef = useRef<{ [sid: string]: Promise<T> }>({});
-  if (
-    cachedPromisesRef.current[sid] === null ||
-    cachedPromisesRef.current[sid] === undefined
-  ) {
-    cachedPromisesRef.current[sid] = createPromise();
-  }
-  return cachedPromisesRef.current[sid];
 };
 
 function fetchTitle(counter: number = 0) {
