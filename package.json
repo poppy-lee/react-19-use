@@ -4,7 +4,8 @@
   "license": "UNLICENSED",
   "main": "src/index.ts",
   "scripts": {
-    "start": "webpack serve"
+    "start": "webpack serve",
+    "build": "webpack"
   },
   "dependencies": {
     "react": "^19.0.0",

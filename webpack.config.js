@@ -2,7 +2,8 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  mode: "development",
+  mode: process.env.WEBPACK_SERVE ? "development" : "production",
+  devtool: process.env.WEBPACK_SERVE  ? "source-map" : undefined,
   entry: path.resolve("./src/index.ts"),
   module: {
     rules: [
