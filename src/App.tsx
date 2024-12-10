@@ -1,8 +1,9 @@
-import { Suspense, use, useState } from "react";
+import { Dispatch, SetStateAction, Suspense, use, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
+import { fetchList } from "./apis/fetchList";
 import { fetchTitle } from "./apis/fetchTitle";
 import { useCachedPromise } from "./hooks/useCachedPromise";
-import { fetchList } from "./apis/fetchList";
 
 export const App = () => {
   const [page, setPage] = useState(0);
@@ -15,24 +16,15 @@ export const App = () => {
       <Suspense fallback={<h1>loading title...</h1>}>
         <Title titlePromise={titlePromise} />
       </Suspense>
-      <Suspense fallback={<span>loading list...</span>}>
-        <List listPromise={listPromise} />
-      </Suspense>
-      <h2>page: {page}</h2>
-      <button
-        onClick={() => {
-          setPage((page) => (10 + page - 1) % 10);
-        }}
+      <ErrorBoundary
+        resetKeys={[page]}
+        fallbackRender={({ error }) => <span>{error}</span>}
       >
-        page - 1
-      </button>
-      <button
-        onClick={() => {
-          setPage((page) => (10 + page + 1) % 10);
-        }}
-      >
-        page + 1
-      </button>
+        <Suspense fallback={<span>loading list...</span>}>
+          <List listPromise={listPromise} />
+        </Suspense>
+      </ErrorBoundary>
+      <Pagination page={page} setPage={setPage} />
     </>
   );
 };
@@ -52,5 +44,25 @@ const List = ({ listPromise }: { listPromise: Promise<number[]> }) => {
         </span>
       ))}
     </span>
+  );
+};
+
+const Pagination = ({
+  page,
+  setPage,
+}: {
+  page: number;
+  setPage: Dispatch<SetStateAction<number>>;
+}) => {
+  return (
+    <>
+      <h2>page: {page}</h2>
+      <button onClick={() => setPage((page) => (10 + page - 1) % 10)}>
+        page - 1
+      </button>
+      <button onClick={() => setPage((page) => (10 + page + 1) % 10)}>
+        page + 1
+      </button>
+    </>
   );
 };
