@@ -5,33 +5,33 @@ import { useCachedPromise } from "./hooks/useCachedPromise";
 import { fetchList } from "./apis/fetchList";
 
 export const App = () => {
-  const [counter, setCounter] = useState(0);
+  const [page, setPage] = useState(0);
 
-  const titlePromise = useCachedPromise(() => fetchTitle(counter), [counter]);
-  const listPromise = useCachedPromise(() => fetchList(counter), [counter]);
+  const titlePromise = useCachedPromise(() => fetchTitle(page), [page]);
+  const listPromise = useCachedPromise(() => fetchList(page), [page]);
 
   return (
     <>
-      <Suspense fallback={<h1>loading...</h1>}>
+      <Suspense fallback={<h1>loading title...</h1>}>
         <Title titlePromise={titlePromise} />
       </Suspense>
-      <Suspense fallback={<span>loading...</span>}>
+      <Suspense fallback={<span>loading list...</span>}>
         <List listPromise={listPromise} />
       </Suspense>
-      <h2>counter: {counter}</h2>
+      <h2>page: {page}</h2>
       <button
         onClick={() => {
-          setCounter((counter) => (10 + counter + 1) % 10);
+          setPage((page) => (10 + page - 1) % 10);
         }}
       >
-        counter + 1
+        page - 1
       </button>
       <button
         onClick={() => {
-          setCounter((counter) => (10 + counter - 1) % 10);
+          setPage((page) => (10 + page + 1) % 10);
         }}
       >
-        counter - 1
+        page + 1
       </button>
     </>
   );
@@ -48,7 +48,7 @@ const List = ({ listPromise }: { listPromise: Promise<number[]> }) => {
     <span>
       {list.map((item) => (
         <span key={item} style={{ margin: "0 4px" }}>
-          {item}
+          item{item}
         </span>
       ))}
     </span>
