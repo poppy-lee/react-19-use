@@ -18,7 +18,7 @@ export const App = () => {
       </Suspense>
       <ErrorBoundary
         resetKeys={[page]}
-        fallbackRender={({ error }) => <span>{error}</span>}
+        fallbackRender={({ error }) => <span>Error: {error}</span>}
       >
         <Suspense fallback={<span>loading list...</span>}>
           <List listPromise={listPromise} />
