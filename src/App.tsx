@@ -1,4 +1,11 @@
-import { Dispatch, SetStateAction, Suspense, use, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  Suspense,
+  use,
+  useDeferredValue,
+  useState,
+} from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 import { fetchList } from "./apis/fetchList";
@@ -7,8 +14,12 @@ import { useCachedPromise } from "./hooks/useCachedPromise";
 
 export const App = () => {
   const [page, setPage] = useState(0);
+  const deferredPage = useDeferredValue(page);
 
-  const titlePromise = useCachedPromise(() => fetchTitle(page), [page]);
+  const titlePromise = useCachedPromise(
+    () => fetchTitle(deferredPage),
+    [deferredPage]
+  );
   const listPromise = useCachedPromise(() => fetchList(page), [page]);
 
   return (
